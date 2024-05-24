@@ -8,6 +8,7 @@ ROOT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fi
 MODEL_PATH = os.path.join(ROOT_PATH, "models")
 PILOT_PATH = os.path.join(ROOT_PATH, "pilot")
 LOGDIR = os.getenv("DBGPT_LOG_DIR", os.path.join(ROOT_PATH, "logs"))
+STATIC_MESSAGE_IMG_PATH = os.path.join(PILOT_PATH, "message/img")
 
 DATASETS_DIR = os.path.join(PILOT_PATH, "datasets")
 DATA_DIR = os.path.join(PILOT_PATH, "data")
@@ -174,11 +175,28 @@ LLM_MODEL_CONFIG = {
     # https://huggingface.co/01-ai/Yi-34B-Chat-4bits
     "yi-34b-chat-4bits": os.path.join(MODEL_PATH, "Yi-34B-Chat-4bits"),
     "yi-6b-chat": os.path.join(MODEL_PATH, "Yi-6B-Chat"),
+    # https://huggingface.co/01-ai/Yi-1.5-6B-Chat
+    "yi-1.5-6b-chat": os.path.join(MODEL_PATH, "Yi-1.5-6B-Chat"),
+    "yi-1.5-9b-chat": os.path.join(MODEL_PATH, "Yi-1.5-9B-Chat"),
+    "yi-1.5-9b-chat-16k": os.path.join(MODEL_PATH, "Yi-1.5-9B-Chat-16K"),
+    "yi-1.5-34b-chat": os.path.join(MODEL_PATH, "Yi-1.5-34B-Chat"),
+    "yi-1.5-34b-chat-16k": os.path.join(MODEL_PATH, "Yi-1.5-34B-Chat-16K"),
     # https://huggingface.co/google/gemma-7b-it
     "gemma-7b-it": os.path.join(MODEL_PATH, "gemma-7b-it"),
     # https://huggingface.co/google/gemma-2b-it
     "gemma-2b-it": os.path.join(MODEL_PATH, "gemma-2b-it"),
     "starling-lm-7b-beta": os.path.join(MODEL_PATH, "Starling-LM-7B-beta"),
+    "deepseek-v2-lite-chat": os.path.join(MODEL_PATH, "DeepSeek-V2-Lite-Chat"),
+    "sailor-14b-chat": os.path.join(MODEL_PATH, "Sailor-14B-Chat"),
+    # https://huggingface.co/microsoft/Phi-3-medium-128k-instruct
+    "phi-3-medium-128k-instruct": os.path.join(
+        MODEL_PATH, "Phi-3-medium-128k-instruct"
+    ),
+    "phi-3-medium-4k-instruct": os.path.join(MODEL_PATH, "Phi-3-medium-4k-instruct"),
+    "phi-3-small-128k-instruct": os.path.join(MODEL_PATH, "Phi-3-small-128k-instruct"),
+    "phi-3-small-8k-instruct": os.path.join(MODEL_PATH, "Phi-3-small-8k-instruct"),
+    "phi-3-mini-128k-instruct": os.path.join(MODEL_PATH, "Phi-3-mini-128k-instruct"),
+    "phi-3-mini-4k-instruct": os.path.join(MODEL_PATH, "Phi-3-mini-4k-instruct"),
 }
 
 EMBEDDING_MODEL_CONFIG = {
@@ -204,6 +222,11 @@ EMBEDDING_MODEL_CONFIG = {
     # Common HTTP embedding model
     "proxy_http_openapi": "proxy_http_openapi",
     "proxy_ollama": "proxy_ollama",
+    # Rerank model, rerank mode is a special embedding model
+    "bge-reranker-base": os.path.join(MODEL_PATH, "bge-reranker-base"),
+    "bge-reranker-large": os.path.join(MODEL_PATH, "bge-reranker-large"),
+    # Proxy rerank model
+    "rerank_proxy_http_openapi": "rerank_proxy_http_openapi",
 }
 
 

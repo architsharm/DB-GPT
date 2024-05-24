@@ -1,9 +1,11 @@
 """Embedding Assembler."""
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, List, Optional
 
 from dbgpt.core import Chunk, Embeddings
 from dbgpt.storage.vector_store.connector import VectorStoreConnector
 
+from ...util.executor_utils import blocking_func_to_async
 from ..assembler.base import BaseAssembler
 from ..chunk_manager import ChunkParameters
 from ..embedding.embedding_factory import DefaultEmbeddingFactory
@@ -98,6 +100,41 @@ class EmbeddingAssembler(BaseAssembler):
             embeddings=embeddings,
         )
 
+    @classmethod
+    async def aload_from_knowledge(
+        cls,
+        knowledge: Knowledge,
+        vector_store_connector: VectorStoreConnector,
+        chunk_parameters: Optional[ChunkParameters] = None,
+        embedding_model: Optional[str] = None,
+        embeddings: Optional[Embeddings] = None,
+        executor: Optional[ThreadPoolExecutor] = None,
+    ) -> "EmbeddingAssembler":
+        """Load document embedding into vector store from path.
+
+        Args:
+            knowledge: (Knowledge) Knowledge datasource.
+            vector_store_connector: (VectorStoreConnector) VectorStoreConnector to use.
+            chunk_parameters: (Optional[ChunkParameters]) ChunkManager to use for
+                chunking.
+            embedding_model: (Optional[str]) Embedding model to use.
+            embeddings: (Optional[Embeddings]) Embeddings to use.
+            executor: (Optional[ThreadPoolExecutor) ThreadPoolExecutor to use.
+
+        Returns:
+             EmbeddingAssembler
+        """
+        executor = executor or ThreadPoolExecutor()
+        return await blocking_func_to_async(
+            executor,
+            cls,
+            knowledge,
+            vector_store_connector,
+            chunk_parameters,
+            embedding_model,
+            embeddings,
+        )
+
     def persist(self) -> List[str]:
         """Persist chunks into vector store.
 
@@ -105,6 +142,14 @@ class EmbeddingAssembler(BaseAssembler):
             List[str]: List of chunk ids.
         """
         return self._vector_store_connector.load_document(self._chunks)
+
+    async def apersist(self) -> List[str]:
+        """Persist chunks into store.
+
+        Returns:
+            List[str]: List of chunk ids.
+        """
+        return await self._vector_store_connector.aload_document(self._chunks)
 
     def _extract_info(self, chunks) -> List[Chunk]:
         """Extract info from chunks."""

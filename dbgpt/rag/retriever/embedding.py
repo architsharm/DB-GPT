@@ -1,4 +1,5 @@
 """Embedding retriever."""
+
 from functools import reduce
 from typing import Any, Dict, List, Optional, cast
 
@@ -120,7 +121,7 @@ class EmbeddingRetriever(BaseRetriever):
         new_candidates_with_score = cast(
             List[Chunk], reduce(lambda x, y: x + y, candidates_with_score)
         )
-        new_candidates_with_score = self._rerank.rank(new_candidates_with_score)
+        new_candidates_with_score = self._rerank.rank(new_candidates_with_score, query)
         return new_candidates_with_score
 
     async def _aretrieve(
@@ -207,7 +208,9 @@ class EmbeddingRetriever(BaseRetriever):
                 "rerank_cls": self._rerank.__class__.__name__,
             },
         ):
-            new_candidates_with_score = self._rerank.rank(new_candidates_with_score)
+            new_candidates_with_score = await self._rerank.arank(
+                new_candidates_with_score, query
+            )
             return new_candidates_with_score
 
     async def _similarity_search(
@@ -226,6 +229,6 @@ class EmbeddingRetriever(BaseRetriever):
         self, query, score_threshold, filters: Optional[MetadataFilters] = None
     ) -> List[Chunk]:
         """Similar search with score."""
-        return self._vector_store_connector.similar_search_with_scores(
+        return await self._vector_store_connector.asimilar_search_with_scores(
             query, self._top_k, score_threshold, filters
         )
